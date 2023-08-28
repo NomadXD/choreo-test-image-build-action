@@ -3,3 +3,8 @@ description: "build test images related to contract testing"
 runs:
   using: "node16"
   main: "dist/index.js"
+inputs:
+  subPath:
+    description: Path of the component repository
+    required: true
+    default: .
