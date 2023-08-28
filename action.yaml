@@ -1,0 +1,5 @@
+name: "Choreo Test Image Build"
+description: "build test images related to contract testing"
+runs:
+  using: "node16"
+  main: "dist/index.js"
