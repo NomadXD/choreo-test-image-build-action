@@ -6,43 +6,31 @@ const path = require("path");
 const { spawn } = require("child_process");
 
 try {
-  // const orgId = core.getInput("org-id");
-  // const projectId = core.getInput("project-id");
-  // const appId = core.getInput("app-id");
-  // const envId = core.getInput("env-id");
-  // const gitHash = core.getInput("git-hash");
-  // const gitOpsHash = core.getInput("gitops-hash");
-  // const componentType = core.getInput("componentType");
-  //const choreoApp = process.env.CHOREO_GITOPS_REPO;
-
-  const subPath = core.getInput("subPath");
-  console.log("subPath: ", subPath);
+  const subPath = core.getInput("sub-path");
   const componentYamlPath = path.join(subPath, ".choreo/component.yaml");
-  console.log("componentYamlPath: ", componentYamlPath);
 
+  // Exit if .choreo/component.yaml is not found
   if (!fs.existsSync(componentYamlPath)) {
     core.setFailed(`Component YAML file not found at ${componentYamlPath}`);
     process.exit(1);
   }
+
+  // Read component.yaml
   const componentYaml = yaml.load(
     fs.readFileSync(`${subPath}/.choreo/component.yaml`, "utf-8")
   );
+
+  // Use postman collection path defined in component.yaml.
+  // If empty use default value passed.
   const postmanCollectionPath =
     componentYaml.contractTests.postman ||
-    core.getInput("defaultPostmanCollectionPath");
-  // const choreoApp = process.env.CHOREO_GITOPS_REPO;
-  // const commitSHA = process.env.NEW_SHA;
-  //const choreoApp = "contract-test";
-  const testTempImageName = core.getInput("testTempImageName");
-  // const commitSHA = "eb44a52d5c444a12d866aab3b22dad203747aa3d";
-  // const registryUrl = "nomadxd";
-  // const newImageTag = `${registryUrl}/${choreoApp}:${process.env.COMMIT_HASH}`;
-  // var child = spawn(
-  //   `docker build -t ${newImageTag} --build-arg POSTMAN_COLLECTION=collection.json .`,
-  //   {
-  //     shell: true,
-  //   }
-  // );
+    core.getInput("default-postman-path");
+
+  // Name of the temporary image name used for test image.
+  // IMPORTANT: choreo-templates/choreo-image-push@v1.0.4 use the same name
+  // to refer the image built in this step.
+  const testTempImageName = core.getInput("test-image-temp-name");
+
   const dockerfileContent = `
     # Use the official Newman base image
     FROM postman/newman:alpine
@@ -85,7 +73,7 @@ try {
   dockerBuildProcess.on("close", (code) => {
     if (code === 0) {
       // Output the tagged Docker image name
-      core.setOutput("dockerImage", newImageTag);
+      core.setOutput("dockerImage", testTempImageName);
     } else {
       core.setFailed(`Docker build process exited with code ${code}`);
     }

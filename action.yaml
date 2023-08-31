@@ -4,15 +4,15 @@ runs:
   using: "node16"
   main: "dist/index.js"
 inputs:
-  subPath:
+  sub-path:
     description: Path of the component repository
     required: true
     default: .
-  testTempImageName:
+  test-image-temp-name:
     description: Temporary image name of the test image
     required: true
-    default: testimagetemptag
-  defaultPostmanCollectionPath:
+    default: testimagetempname
+  default-postman-path:
     description: Default location of the test source file if not specified in the component.yaml
     required: true
     default: .choreo/postman.json
