@@ -13928,6 +13928,7 @@ const core = __nccwpck_require__(7616);
 const github = __nccwpck_require__(8125);
 const yaml = __nccwpck_require__(1948);
 const fs = __nccwpck_require__(7147);
+const path = __nccwpck_require__(1017);
 const { spawn } = __nccwpck_require__(2081);
 
 try {

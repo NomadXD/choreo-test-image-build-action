@@ -2,6 +2,7 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const yaml = require("js-yaml");
 const fs = require("fs");
+const path = require("path");
 const { spawn } = require("child_process");
 
 try {
