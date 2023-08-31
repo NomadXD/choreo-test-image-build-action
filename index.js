@@ -12,17 +12,28 @@ try {
   // const gitHash = core.getInput("git-hash");
   // const gitOpsHash = core.getInput("gitops-hash");
   // const componentType = core.getInput("componentType");
+  //const choreoApp = process.env.CHOREO_GITOPS_REPO;
+
   const subPath = core.getInput("subPath");
-  const component = yaml.load(
+  const componentYamlPath = path.join(subPath, "/.choreo/component.yaml");
+
+  if (!fs.existsSync(componentYamlPath)) {
+    core.setFailed(`Component YAML file not found at ${componentYamlPath}`);
+    process.exit(1);
+  }
+  const componentYaml = yaml.load(
     fs.readFileSync(`${subPath}/.choreo/component.yaml`, "utf-8")
   );
-  const postmanCollectionPath = component.contractTests.postman;
+  const postmanCollectionPath =
+    componentYaml.contractTests.postman ||
+    core.getInput("defaultPostmanCollectionPath");
   // const choreoApp = process.env.CHOREO_GITOPS_REPO;
   // const commitSHA = process.env.NEW_SHA;
-  const choreoApp = "contract-test";
-  const commitSHA = "eb44a52d5c444a12d866aab3b22dad203747aa3d";
-  const registryUrl = "nomadxd";
-  const newImageTag = `${registryUrl}/${choreoApp}:${commitSHA}`;
+  //const choreoApp = "contract-test";
+  const testTempImageName = core.getInput("testTempImageName");
+  // const commitSHA = "eb44a52d5c444a12d866aab3b22dad203747aa3d";
+  // const registryUrl = "nomadxd";
+  // const newImageTag = `${registryUrl}/${choreoApp}:${process.env.COMMIT_HASH}`;
   // var child = spawn(
   //   `docker build -t ${newImageTag} --build-arg POSTMAN_COLLECTION=collection.json .`,
   //   {
@@ -52,7 +63,7 @@ try {
   const dockerBuildProcess = spawn("docker", [
     "build",
     "-t",
-    newImageTag,
+    testTempImageName,
     "-f",
     "Dockerfile.inline",
     "--build-arg",

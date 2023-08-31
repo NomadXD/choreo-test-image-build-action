@@ -8,3 +8,11 @@ inputs:
     description: Path of the component repository
     required: true
     default: .
+  testTempImageName:
+    description: Temporary image name of the test image
+    required: true
+    default: testimagetemptag
+  defaultPostmanCollectionPath:
+    description: Default location of the test source file if not specified in the component.yaml
+    required: true
+    default: .choreo/postman.json
