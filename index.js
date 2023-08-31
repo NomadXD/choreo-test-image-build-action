@@ -15,7 +15,9 @@ try {
   //const choreoApp = process.env.CHOREO_GITOPS_REPO;
 
   const subPath = core.getInput("subPath");
+  console.log("subPath: ", subPath);
   const componentYamlPath = path.join(subPath, ".choreo/component.yaml");
+  console.log("componentYamlPath: ", componentYamlPath);
 
   if (!fs.existsSync(componentYamlPath)) {
     core.setFailed(`Component YAML file not found at ${componentYamlPath}`);
